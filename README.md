@@ -1,5 +1,5 @@
 
-# Quaternion Bone Control (Three.js)
+# Quaternion Bone Control
 
 ## Project Overview
 
