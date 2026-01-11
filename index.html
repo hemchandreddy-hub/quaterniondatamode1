@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>3D Character — Quaternion Bone Control</title>
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.155.0/build/three.module.js"
+    }
+  }
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body class="bg-slate-50 text-slate-900">
+
+  <div id="overlay" class="overlay">
+    Loading 3D Character...
+  </div>
+
+  <div id="ui" class="ui hidden">
+    <h1 class="text-xl mb-2 font-semibold">Bone Control</h1>
+
+    <div class="buttons">
+      <button class="btn" id="raise-hand">Raise Right Hand</button>
+      <button class="btn" id="lower-hand">Lower Right Hand</button>
+
+      <button class="btn" id="raise-leg">Raise Right Leg</button>
+      <button class="btn" id="lower-leg">Lower Right Leg</button>
+
+      <button class="btn" id="reset-pose">Reset Pose</button>
+    </div>
+  </div>
+
+  <div id="scene-container"></div>
+
+  <script type="module" src="script.js"></script>
+</body>
+</html>
