@@ -4,118 +4,116 @@ import { GLTFLoader } from 'https://unpkg.com/three@0.155.0/examples/jsm/loaders
 
 let scene, camera, renderer, controls;
 let model, skeleton;
+let restPose = new Map();
 
-/* UI ELEMENTS */
+
 const container = document.getElementById('scene-container');
 const overlay = document.getElementById('overlay');
 const ui = document.getElementById('ui');
 
-const btnRaiseHand = document.getElementById('raise-hand');
-const btnLowerHand = document.getElementById('lower-hand');
-const btnRaiseLeg  = document.getElementById('raise-leg');
-const btnLowerLeg  = document.getElementById('lower-leg');
-const btnReset     = document.getElementById('reset-pose');
+const handSlider = document.getElementById('handSlider');
+const handNumber = document.getElementById('handNumber');
+const legSlider  = document.getElementById('legSlider');
+const legNumber  = document.getElementById('legNumber');
+const resetBtn   = document.getElementById('reset');
 
-/* INIT */
 init();
 animate();
 
 function init() {
   scene = new THREE.Scene();
-  scene.background = new THREE.Color(0xf1f5f9);
+  camera = new THREE.PerspectiveCamera(50, innerWidth/innerHeight, 0.1, 100);
+  camera.position.set(0,1.6,3);
+  scene.background = new THREE.Color(0xefffff);
 
-  camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 100);
-  camera.position.set(0, 1.6, 3);
 
-  renderer = new THREE.WebGLRenderer({ antialias: true });
-  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer = new THREE.WebGLRenderer({ antialias:true });
+  renderer.setSize(innerWidth, innerHeight);
   container.appendChild(renderer.domElement);
 
-  scene.add(new THREE.HemisphereLight(0xffffff, 0x444444, 1));
-
-  const dl = new THREE.DirectionalLight(0xffffff, 0.8);
-  dl.position.set(5, 10, 7);
+  scene.add(new THREE.HemisphereLight(0xffffff,0x444444,1));
+  const dl = new THREE.DirectionalLight(0xffffff,0.8);
+  dl.position.set(5,10,7);
   scene.add(dl);
 
   controls = new OrbitControls(camera, renderer.domElement);
-  controls.target.set(0, 1, 0);
+  controls.target.set(0,1,0);
   controls.enableDamping = true;
 
   loadModel();
-  window.addEventListener('resize', onResize);
+  addUIEvents();
 }
 
-/* LOAD MODEL */
 function loadModel() {
-  new GLTFLoader().load('model.glb', (gltf) => {
+  new GLTFLoader().load('model.glb', gltf => {
     model = gltf.scene;
-
-    model.traverse(o => {
-      if (o.isSkinnedMesh) skeleton = o.skeleton;
-    });
-
-    const box = new THREE.Box3().setFromObject(model);
-    model.position.sub(box.getCenter(new THREE.Vector3()));
+    model.traverse(o => { if (o.isSkinnedMesh) skeleton = o.skeleton; });
 
     scene.add(model);
-
     overlay.style.display = 'none';
     ui.classList.remove('hidden');
+    skeleton.bones.forEach(bone => {
+  restPose.set(bone.name, bone.quaternion.clone());
+});
 
-    setupUI();
   });
 }
 
-/* UI CONTROLS */
-function setupUI() {
+/* ---- SLIDER + NUMBER SYNC ---- */
 
-  // RIGHT ARM
-  btnRaiseHand.onclick = () =>
-    setBoneQuaternion('hand_ik.R', 'x', -0.6);
-  btnLowerHand.onclick = () =>
-    setBoneQuaternion('hand_ik.R', 'x', 0.6);
-  // RIGHT LEG
-  btnRaiseLeg.onclick = () =>
-    setBoneQuaternion('DEF-thighR', 'x', 0.3);
-  btnLowerLeg.onclick = () =>
-    setBoneQuaternion('DEF-thighR', 'x', -0.3);
-  btnReset.onclick = resetPose;
+function bindControl(slider, number, boneName, axis) {
+
+  function apply(value) {
+    slider.value = number.value = value;
+    applyQuaternion(boneName, axis, parseFloat(value));
+  }
+
+  slider.oninput = e => apply(e.target.value);
+  number.oninput = e => apply(e.target.value);
 }
 
-function getBoneByKeyword(keyword) {
-  return skeleton.bones.find(b => b.name.includes(keyword));
+function addUIEvents() {
+  bindControl(handSlider, handNumber, 'hand_ik.R', 'z');
+  bindControl(legSlider,  legNumber,  'DEF-thighR', 'x');
+
+  resetBtn.onclick = resetPose;
 }
-function setBoneQuaternion(name, axis, angle) 
-{
+
+/* ---- QUATERNION ONLY ---- */
+
+function applyQuaternion(name, axis, angle) {
   const bone = skeleton.getBoneByName(name);
-  if (!bone) return console.warn('Bone not found:', name);
+  if (!bone) return;
 
   const axisVec =
     axis === 'x' ? new THREE.Vector3(1,0,0) :
     axis === 'y' ? new THREE.Vector3(0,1,0) :
-    axis ==='z' ?  new THREE.Vector3(0,0,1) :
+                   new THREE.Vector3(0,0,1);
 
-  bone.quaternion.multiply(
+  bone.quaternion.copy(
     new THREE.Quaternion().setFromAxisAngle(axisVec, angle)
   );
 }
 
-
-/* RESET */
 function resetPose() {
-  skeleton.bones.forEach(b => b.quaternion.identity());
+  skeleton.bones.forEach(bone => {
+    const q = restPose.get(bone.name);
+    if (q) bone.quaternion.copy(q);
+  });
+
+  rightHandSlider.value = 0;
+  rightLegSlider.value = 0;
 }
 
-/* LOOP */
+
 function animate() {
   requestAnimationFrame(animate);
   controls.update();
   renderer.render(scene, camera);
 }
 
-/* RESIZE */
-function onResize() {
-  camera.aspect = window.innerWidth / window.innerHeight;
+onresize = () => {
+  camera.aspect = innerWidth/innerHeight;
   camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-}
+  renderer.setSize(innerWidth, innerHeight);
+};
