@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>3D Character — Quaternion Bone Control</title>
+  <title>Quaternion Bone Control</title>
 
   <script type="importmap">
   {
@@ -13,32 +13,35 @@
   }
   </script>
 
-  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="style.css" />
 </head>
 
-<body class="bg-slate-50 text-slate-900">
+<body>
 
-  <div id="overlay" class="overlay">
-    Loading 3D Character...
+<div id="overlay" class="overlay">Loading 3D Character...</div>
+
+<div id="ui" class="ui hidden">
+  <h2>Controls</h2>
+
+  <h3>Additive Bone Weights</h3>
+
+  <div class="control-row">
+    <span>right_hand</span>
+    <input type="range" id="handSlider" min="-1" max="1" step="0.01" value="0">
+    <input type="number" id="handNumber" min="-1" max="1" step="0.01" value="0">
   </div>
 
-  <div id="ui" class="ui hidden">
-    <h1 class="text-xl mb-2 font-semibold">Bone Control</h1>
-
-    <div class="buttons">
-      <button class="btn" id="raise-hand">Raise Right Hand</button>
-      <button class="btn" id="lower-hand">Lower Right Hand</button>
-
-      <button class="btn" id="raise-leg">Raise Right Leg</button>
-      <button class="btn" id="lower-leg">Lower Right Leg</button>
-
-      <button class="btn" id="reset-pose">Reset Pose</button>
-    </div>
+  <div class="control-row">
+    <span>right_leg</span>
+    <input type="range" id="legSlider" min="-1" max="1" step="0.01" value="0">
+    <input type="number" id="legNumber" min="-1" max="1" step="0.01" value="0">
   </div>
 
-  <div id="scene-container"></div>
+  <button id="reset">Reset Pose</button>
+</div>
 
-  <script type="module" src="script.js"></script>
+<div id="scene-container"></div>
+
+<script type="module" src="script.js"></script>
 </body>
 </html>
