@@ -34,19 +34,18 @@ Using sliders and number inputs, we can smoothly rotate the **right hand** and *
 ├── style.css       → UI styling
 ├── script.js       → Three.js logic
 ├── model.glb       → 3D character model
-└── README.md       → Project description
 ```
 
 ---
 
-## ▶️ How to Run the Project
+## How to Run the Project
 
 1. Place all files in the same folder
 2. Make sure `model.glb` exists in the folder
 3. Run the project using a local server (recommended):
 4. Open the provided localhost URL in a browser
 
-## 📚 Learning Outcome
+## Learning Outcome
 
 By studying this project, you will understand:
 
@@ -55,7 +54,7 @@ By studying this project, you will understand:
 * How to sync UI controls with 3D animations
 * How to reset and manage bone poses
 
-## ✅ Conclusion
+## Conclusion
 
 This project is a beginner-friendly example of **real-time bone manipulation using quaternions**.
 It can be extended to control more bones, add animations, or integrate with game engines.
