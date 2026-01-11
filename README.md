@@ -29,7 +29,6 @@ Using sliders and number inputs, we can smoothly rotate the **right hand** and *
 
 ```
 
-│
 ├── index.html      → HTML structure
 ├── style.css       → UI styling
 ├── script.js       → Three.js logic
