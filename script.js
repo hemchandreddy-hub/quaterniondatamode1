@@ -59,8 +59,6 @@ function loadModel() {
   });
 }
 
-/* ---- SLIDER + NUMBER SYNC ---- */
-
 function bindControl(slider, number, boneName, axis) {
 
   function apply(value) {
@@ -79,7 +77,6 @@ function addUIEvents() {
   resetBtn.onclick = resetPose;
 }
 
-/* ---- QUATERNION ONLY ---- */
 
 function applyQuaternion(name, axis, angle) {
   const bone = skeleton.getBoneByName(name);
@@ -117,3 +114,4 @@ onresize = () => {
   camera.updateProjectionMatrix();
   renderer.setSize(innerWidth, innerHeight);
 };
+
